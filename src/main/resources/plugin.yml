@@ -1,0 +1,13 @@
+name: WhiteBirdPvP
+version: 1.0.0
+main: com.github.niwaniwa.whitebird.pvp.WhiteBirdPvP
+commands:
+  whitebirdpvp:
+  arena:
+  duel:
+  accept:
+  maps:
+  spawn:
+  leave:
+  namechange:
+  match:
