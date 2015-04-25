@@ -96,7 +96,7 @@ public class DuelCommand implements CommandExecutor {
 	 */
 	private String tellrawMessage(Player target,Player player){
 		ArrayList<String> items = new ArrayList<String>();
-		items.add("\"text\":\"" + "§r"+pre+"§d/aceept "+Util.toWhiteBird(player).getPlayer().getName() +"で受理" + "\"");
+		items.add("\"text\":\"" + "§r"+pre+"§d§n/aceept "+Util.toWhiteBird(player).getPlayer().getName() +"で受理" + "\"");
 		items.add("\"color\":\"" + ChatColor.LIGHT_PURPLE.name().toLowerCase() + "\"");
 		items.add("\"" + "underlined" + "\":\"true\"");
 		items.add("\"clickEvent\":"

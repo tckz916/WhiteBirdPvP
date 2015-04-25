@@ -40,7 +40,7 @@ public class AcceptCommand implements CommandExecutor {
 			sender.sendMessage(pre+"§c現在試合中です。");
 			return true;
 		} else if(Util.getArena(target)!=null){
-			sender.sendMessage(pre+"§c"+target.getName()+"現在試合中です。");
+			sender.sendMessage(pre+"§c"+target.getName()+"は現在試合中です。");
 			return true;
 		}
 

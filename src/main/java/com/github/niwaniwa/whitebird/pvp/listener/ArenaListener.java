@@ -2,6 +2,8 @@ package com.github.niwaniwa.whitebird.pvp.listener;
 
 import java.math.BigDecimal;
 
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -10,11 +12,16 @@ import org.bukkit.inventory.ItemStack;
 
 import com.github.niwaniwa.whitebird.core.event.WhiteBirdPlayerDamageEvent;
 import com.github.niwaniwa.whitebird.core.event.WhiteBirdPlayerDeathEvent;
+import com.github.niwaniwa.whitebird.core.player.WhiteBirdPlayer;
+import com.github.niwaniwa.whitebird.core.util.Title;
+import com.github.niwaniwa.whitebird.core.util.WhiteTell;
 import com.github.niwaniwa.whitebird.pvp.WhiteBirdPvP;
 import com.github.niwaniwa.whitebird.pvp.arena.Arena;
 import com.github.niwaniwa.whitebird.pvp.util.Util;
 
 public class ArenaListener implements Listener {
+
+	public final String pre = "§r[§91vs1§r]";
 
 	/**
 	 * アリーナでの死亡判定
@@ -36,8 +43,18 @@ public class ArenaListener implements Listener {
 			for(Player p : Util.getArena(death).getArenaPlayers()){
 				if(!p.equals(death)){
 					Util.teleportSpawn(p);
+					//title(p, ": Win :", ChatColor.RED);
+
+					WhiteBirdPlayer white = Util.toWhiteBird(p);
+
+					white.setItems(p.getInventory().getContents());
+
+					tell(death, p);
+					tell(p, death);
 				}
 			}
+
+//			title(death, " : Lose :", ChatColor.RED);
 
 			arena1.stopArena();
 
@@ -60,8 +77,22 @@ public class ArenaListener implements Listener {
 		if(Util.getPing(killer)!=null){
 			message = message.replaceAll("%p", String.valueOf(Util.getPing(killer)));
 		}
+
 		Util.broadcastMessage(message);
 		Util.teleportSpawn(killer);
+
+		WhiteBirdPlayer white = Util.toWhiteBird(killer);
+
+		white.setItems(killer.getInventory().getContents());
+
+//		title(killer, ": Win :", ChatColor.RED);
+
+//		title(death, " : Lose :", ChatColor.RED);
+
+		tell(death, killer);
+
+		tell(killer, death);
+
 	}
 
 	/**
@@ -72,7 +103,13 @@ public class ArenaListener implements Listener {
 	public void onDamage(WhiteBirdPlayerDamageEvent event){
 		Player damager = event.getDamagePlayer();
 		event.setDamage(event.getDamage()-1);
-		if(Util.getArena(damager)==null){event.setCancelled(true); return;}
+		if(Util.getArena(damager)==null){
+
+			if(!damager.getWorld().equals(Bukkit.getWorld("world_the_end"))){
+				event.setCancelled(true);
+			}
+			return;
+		}
 	}
 
 	private void healthSendMessage(Player player,Player target){
@@ -138,4 +175,17 @@ public class ArenaListener implements Listener {
 //		String str = "\n %kPing: %p";
 		return killMessage;
 	}
+
+	public void title(Player player, String message, ChatColor color){
+		Title title = new Title(message);
+		title.setTitleColor(color);
+		title.send(player);
+	}
+
+	private void tell(Player player, Player target){
+		WhiteTell tell = new WhiteTell(pre+"§a"+target.getName()+" §6のインベントリを見る", "：クリック : インベントリを見る",
+				"/getInventory "+target.getName(), "run_command", ChatColor.GOLD, ChatColor.LIGHT_PURPLE);
+		tell.sand(player);
+	}
+
 }

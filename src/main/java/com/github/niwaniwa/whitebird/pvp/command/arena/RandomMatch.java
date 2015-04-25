@@ -10,6 +10,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import com.github.niwaniwa.whitebird.pvp.WhiteBirdPvP;
 import com.github.niwaniwa.whitebird.pvp.arena.Arena;
 import com.github.niwaniwa.whitebird.pvp.command.duel.AcceptCommand;
 import com.github.niwaniwa.whitebird.pvp.util.Util;
@@ -49,6 +50,14 @@ public class RandomMatch extends BukkitRunnable implements CommandExecutor {
 
 		players.add(player);
 		sender.sendMessage(pre+"試合が開始されるまでしばらくお待ちください");
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				players.remove(player);
+				sender.sendMessage(pre+"一定時間が経過したため申請が破棄されました。");
+				this.cancel();
+			}
+		}.runTaskLater(WhiteBirdPvP.getInstance(), 40*20);
 		return true;
 	}
 
@@ -95,6 +104,9 @@ public class RandomMatch extends BukkitRunnable implements CommandExecutor {
 		accept.settingArena(arena, p1, p2);
 		accept.setMode(p1);
 		accept.setMode(p2);
+
+		players.remove(p1);
+		players.remove(p2);
 
 	}
 

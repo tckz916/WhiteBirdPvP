@@ -16,6 +16,9 @@ public class PotionListener implements Listener {
 				|| event.getAction().equals(Action.RIGHT_CLICK_BLOCK)){
 			if(event.getItem()==null
 					|| !event.getItem().getType().equals(Material.POTION)){return;}
+
+			if(event.getItem().getDurability() <= 0){return;}
+
 			Potion potion = Potion.fromItemStack(event.getItem());
 			if(potion.isSplash()){
 				event.getPlayer().setItemInHand(new ItemStack(Material.AIR));
