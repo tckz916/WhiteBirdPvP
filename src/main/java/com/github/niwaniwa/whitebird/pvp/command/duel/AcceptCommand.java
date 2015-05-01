@@ -62,7 +62,6 @@ public class AcceptCommand implements CommandExecutor {
 		if(gameArena == null){
 			sender.sendMessage(pre+"現在満員です");
 			target.sendMessage(pre+"現在満員です");
-			DuelCommand.getDuelPlayers().remove(target);
 			return true;
 		}
 

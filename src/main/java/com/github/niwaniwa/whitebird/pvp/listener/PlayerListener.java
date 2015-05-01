@@ -1,5 +1,7 @@
 package com.github.niwaniwa.whitebird.pvp.listener;
 
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -8,6 +10,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import com.github.niwaniwa.whitebird.core.rank.Rank;
@@ -66,7 +69,7 @@ public class PlayerListener implements Listener {
 	public void onCommand(PlayerCommandPreprocessEvent event){
 		String command = event.getMessage();//プレイヤーがコマンドとして入力した"/"で始まるメッセージ
 		Player player = event.getPlayer();
-		if(command.equalsIgnoreCase("/"+command)){
+		if(command.equalsIgnoreCase("/kill")){
 			Arena arena = Util.getArena(player);
 			if(arena!=null){
 				player.sendMessage("§c試合中は実行できません。");
@@ -74,6 +77,16 @@ public class PlayerListener implements Listener {
 				event.setCancelled(true);
 			}
 		}
+	}
+
+	@EventHandler
+	public void onMove(PlayerMoveEvent event){
+		Player player = event.getPlayer();
+		Location loc = player.getLocation();
+		if(loc.getBlockY() <= -100){
+			player.teleport(Bukkit.getWorld("world").getSpawnLocation());
+		}
+		return;
 	}
 
 }

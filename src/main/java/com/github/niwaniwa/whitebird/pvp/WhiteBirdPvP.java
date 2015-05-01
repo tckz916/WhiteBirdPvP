@@ -16,6 +16,7 @@ import com.github.niwaniwa.whitebird.pvp.command.arena.MapsCommand;
 import com.github.niwaniwa.whitebird.pvp.command.arena.RandomMatch;
 import com.github.niwaniwa.whitebird.pvp.command.duel.AcceptCommand;
 import com.github.niwaniwa.whitebird.pvp.command.duel.DuelCommand;
+import com.github.niwaniwa.whitebird.pvp.conf.MessageManager;
 import com.github.niwaniwa.whitebird.pvp.item.EnderPearle;
 import com.github.niwaniwa.whitebird.pvp.item.PotionListener;
 import com.github.niwaniwa.whitebird.pvp.listener.ArenaListener;
@@ -40,11 +41,12 @@ public class WhiteBirdPvP extends JavaPlugin {
 
 		rand.runTaskTimer(this, 20, 20);
 
+		MessageManager.copyLangFile();
+
 	}
 
 	@Override
 	public void onDisable(){
-		rand.cancel();
 	}
 
 	public static WhiteBirdPvP getInstance(){
@@ -78,7 +80,8 @@ public class WhiteBirdPvP extends JavaPlugin {
 	private void registersArena(){
 		File source = new File("maps/");
 		if(!source.exists()){
-			disable();
+			System.out.println("THIS SERVER IS PLUGIN TEST MODE !!");
+//			disable();
 			return;
 		}
 		if(source.isFile()){return;}
@@ -97,4 +100,5 @@ public class WhiteBirdPvP extends JavaPlugin {
 		getLogger().warning("Map is Empty. This plugin is Disable!");
 		Bukkit.getPluginManager().disablePlugin(this);
 	}
+
 }

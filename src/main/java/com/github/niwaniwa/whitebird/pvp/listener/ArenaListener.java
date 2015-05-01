@@ -36,6 +36,7 @@ public class ArenaListener implements Listener {
 		// null --> return
 		if(arena1 == null){return;}
 		event.setMessage(false);
+		System.out.println(event.getDeathMessage());
 		if(killer==null){
 			try{
 			Util.broadcastMessage(event.getDeathMessage());
@@ -161,11 +162,11 @@ public class ArenaListener implements Listener {
 			break;
 		case FIRE:
 			killMessage = "§c"+Util.toWhiteBird(player).getFullName()
-					+" §eは §c%k §eの魔法で燃え尽きた。";
+					+" §eは §c%k §eによって燃え尽きた。";
 			break;
 		case FIRE_TICK:
 			killMessage = "§c"+Util.toWhiteBird(player).getFullName()
-			+" §eは §c%k §eの魔法で燃え尽きた。";
+			+" §eは §c%k §eによって燃え尽きた。";
 			break;
 		default:
 			killMessage = "§c"+Util.toWhiteBird(player).getFullName()

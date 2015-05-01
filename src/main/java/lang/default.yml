@@ -1,0 +1,16 @@
+Commnads:
+  Console: "§cPlease execute this command from the game!"
+  notFoundPlayer: "§cPlayer is not found."
+  notPlayer: "§cPlease appoint a player."
+Duel:
+  inGame: "§cPlaying a game now."
+  duelRequestedTo: "§6%p has requested to duel you."
+  duelAcceptTellraw: "§6to accept, type §d/accept %p §6in the next 40 seconds."
+  duealAccept: "§6Duel accepted"
+arena:
+  full: "arena is full."
+  opponent: "opponent"
+item:
+  enderPearle:
+    coolTimeEnable: "§7Cool time is now enabled.Cool time is §6%t §7seconds."
+    coolTimeDisable: "Cool time became invalid"
