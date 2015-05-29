@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import com.github.niwaniwa.whitebird.pvp.WhiteBirdPvP;
+import com.github.niwaniwa.whitebird.pvp.conf.MessageManager;
 import com.github.niwaniwa.whitebird.pvp.util.Util;
 
 public class DuelCommand implements CommandExecutor {
@@ -30,19 +31,20 @@ public class DuelCommand implements CommandExecutor {
 			Command command, String label,
 			String[] args) {
 		if(!(sender instanceof Player)){
-			sender.sendMessage(pre+"ゲーム内から実行してください");
-		} else if(args.length==0){sender.sendMessage(pre+"§cプレイヤーを指定してください。"); return true;}
+			sender.sendMessage(pre+MessageManager.getString(sender, "Commnads.Console"));
+		} else if(args.length==0){sender.sendMessage(pre+MessageManager.getString(sender, "Commands.notPlayer")); return true;}
 
 		Player player = (Player) sender;
 		Player target = Util.getPlayer(args[0]);
 
-		if(target == null){sender.sendMessage(pre+"§cプレイヤーが見つかりません。"); return true;}
+		if(target == null){sender.sendMessage(pre+MessageManager.getString(player, "Commands.notFoundPlayer")); return true;}
 
 		if(Util.getArena(player)!=null){
-			sender.sendMessage(pre+"§c現在試合中です。");
+			sender.sendMessage(pre+MessageManager.getString(player, "Duel.inGame"));
 			return true;
 		} else if(Util.getArena(target)!=null){
-			sender.sendMessage(pre+"§c"+target.getName()+"現在試合中です。");
+			sender.sendMessage(pre+MessageManager.getString(sender, "Duel.targetInGame")
+					.replaceAll("%p", target.getName()));
 			return true;
 		}
 
@@ -64,7 +66,7 @@ public class DuelCommand implements CommandExecutor {
 			@Override
 			public void run() {
 				if(duelList.containsKey(player)){
-					player.sendMessage(pre+"§e一定時間経過したため申請は破棄されました");
+					player.sendMessage(pre+MessageManager.getString(player, "Duel.duelTimeOut"));
 					duelList.remove(player);
 					this.cancel();
 					return;
@@ -81,11 +83,13 @@ public class DuelCommand implements CommandExecutor {
 	}
 
 	private void duelMessage_P(Player target,Player player){
-		player.sendMessage(pre+"§6"+Util.toWhiteBird(target).getPlayer().getName()+"に申請しました。");
+		player.sendMessage(pre+MessageManager.getString(target, "Duel.duelRequestedTo")
+				.replaceAll("%p", Util.toWhiteBird(target).getPlayer().getName()));
 	}
 
 	private void duelMessage_T(Player target,Player player){
-		target.sendMessage(pre+"§6"+Util.toWhiteBird(player).getPlayer().getName()+"から申請されました。");
+		target.sendMessage(pre+MessageManager.getString(target, "Duel.duelRequestedFrom")
+				.replaceAll("%p", Util.toWhiteBird(player).getPlayer().getName()));
 	}
 
 	/**
@@ -96,7 +100,9 @@ public class DuelCommand implements CommandExecutor {
 	 */
 	private String tellrawMessage(Player target,Player player){
 		ArrayList<String> items = new ArrayList<String>();
-		items.add("\"text\":\"" + "§r"+pre+"§d§n/aceept "+Util.toWhiteBird(player).getPlayer().getName() +"で受理" + "\"");
+		items.add("\"text\":\"" + "§r"+pre+MessageManager.getString(target, "Duel.duelAcceptTellraw")
+				.replaceAll("%p", Util.toWhiteBird(player).getPlayer().getName())
+				+ "\"");
 		items.add("\"color\":\"" + ChatColor.LIGHT_PURPLE.name().toLowerCase() + "\"");
 		items.add("\"" + "underlined" + "\":\"true\"");
 		items.add("\"clickEvent\":"

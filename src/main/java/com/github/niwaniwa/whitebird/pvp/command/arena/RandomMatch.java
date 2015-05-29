@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -110,9 +111,18 @@ public class RandomMatch extends BukkitRunnable implements CommandExecutor {
 
 	}
 
-
-
-
+	public void showPlayers(){
+		if(Bukkit.getOnlinePlayers().size() == 0){
+			return;
+		}
+		// ついでに位置ずれを改善
+		for(Player p1 : Bukkit.getOnlinePlayers()){
+			for(Player p2 : Bukkit.getOnlinePlayers()){
+				if(p2.equals(p1)){continue;}
+				p2.showPlayer(p1);
+			}
+		}
+	}
 
 
 

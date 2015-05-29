@@ -1,14 +1,39 @@
 name: WhiteBirdPvP
-version: 1.1.0
+version: 2.0．0
 main: com.github.niwaniwa.whitebird.pvp.WhiteBirdPvP
 commands:
   whitebirdpvp:
+    description: WhiteBirdPvP Command.
+    aliases: wbp
+    permission: whitebird.admin.mod
   arena:
+    description: Arena Command.
+    permission: whitebird.admin.mod
+    usage: /<command> help
   duel:
+    description: duel Command.
+    permission: whitebird.player
+    usage: /<command> <Player>
   accept:
+    description: accept Command.
+    permission: whitebird.player
+    usage: /<command> <Player>
+    aliases: ac
   maps:
+    description: map Command.
+    permission: whitebird.player
+    usage: /<command>
+    aliases: map
   spawn:
+    description: spawn Command.
+    permission: whitebird.player
+    usage: /<command>
   leave:
-  namechange:
+    description: leave Command.
+    permission: whitebird.player
+    usage: /<command> <reason>
   match:
+    description: Random match Command.
+    permission: whitebird.player
+    usage: /<command>
   getInventory:

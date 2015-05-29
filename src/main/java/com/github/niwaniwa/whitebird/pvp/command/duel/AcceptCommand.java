@@ -16,6 +16,7 @@ import org.bukkit.potion.PotionEffect;
 
 import com.github.niwaniwa.whitebird.pvp.arena.Arena;
 import com.github.niwaniwa.whitebird.pvp.arena.ArenaType;
+import com.github.niwaniwa.whitebird.pvp.conf.MessageManager;
 import com.github.niwaniwa.whitebird.pvp.util.Util;
 
 public class AcceptCommand implements CommandExecutor {
@@ -27,20 +28,21 @@ public class AcceptCommand implements CommandExecutor {
 			Command command, String label,
 			String[] args) {
 		if(!(sender instanceof Player)){
-			sender.sendMessage(pre+"ゲーム内から実行してください");
+			sender.sendMessage(pre+MessageManager.getString(sender, "Commnads.Console"));
 			return true;
-		} else if(args.length==0){sender.sendMessage(pre+"§cプレイヤーを指定してください。"); return true;}
+		} else if(args.length==0){sender.sendMessage(pre+MessageManager.getString(sender, "Commands.notPlayer")); return true;}
 
 		Player player = (Player) sender;
 		Player target = Util.getPlayer(args[0]);
 
-		if(target == null){sender.sendMessage(pre+"§cプレイヤーが見つかりません。"); return true;}
+		if(target == null){sender.sendMessage(pre+MessageManager.getString(player, "Commands.notFoundPlayer")); return true;}
 
 		if(Util.getArena(player)!=null){
-			sender.sendMessage(pre+"§c現在試合中です。");
+			sender.sendMessage(pre+MessageManager.getString(player, "Duel.inGame"));
 			return true;
 		} else if(Util.getArena(target)!=null){
-			sender.sendMessage(pre+"§c"+target.getName()+"は現在試合中です。");
+			sender.sendMessage(pre+MessageManager.getString(sender, "Duel.targetInGame")
+					.replaceAll("%p", target.getName()));
 			return true;
 		}
 
@@ -48,7 +50,7 @@ public class AcceptCommand implements CommandExecutor {
 
 		if(!Util.contains(map, target)
 				|| map.get(target)==null){
-			sender.sendMessage(pre+"§c貴方は申請を受けていません。");
+			sender.sendMessage(pre+MessageManager.getString(sender, "Duel.playerNotDuelReqested"));
 			return true;
 		}
 
@@ -60,8 +62,8 @@ public class AcceptCommand implements CommandExecutor {
 
 		Arena gameArena = randomArena();
 		if(gameArena == null){
-			sender.sendMessage(pre+"現在満員です");
-			target.sendMessage(pre+"現在満員です");
+			sender.sendMessage(pre+MessageManager.getString(sender, "arena.full"));
+			target.sendMessage(pre+MessageManager.getString(target, "arena.full"));
 			return true;
 		}
 
@@ -132,7 +134,7 @@ public class AcceptCommand implements CommandExecutor {
 		player1.sendMessage(temp);
 		player2.sendMessage(temp);
 
-		String temp2 = "§6： 対戦相手 ： §d";
+		String temp2 = "§6： "+MessageManager.getString(player1, "Arena.opponent")+" ： §d";
 
 		player1.sendMessage(temp2+player2.getName());
 		player2.sendMessage(temp2+player1.getName());

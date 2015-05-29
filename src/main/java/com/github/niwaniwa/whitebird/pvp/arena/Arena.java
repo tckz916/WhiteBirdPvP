@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -49,12 +50,13 @@ public class Arena {
 		if(!source.exists()){return;}
 		if(source.isFile()){return;}
 		File[] files = source.listFiles();
-		try {
-			Util.copyTransfer(source, new File(source.getName()));
-		} catch (IOException e) {}
+		UUID uuid = UUID.randomUUID();
 		for(File file : files){
 			if(file.getName().equals("map.xml")){
-				new Arena(source);
+				try {
+					Util.copyTransfer(source, new File(uuid.toString()));
+				} catch (IOException e) {}
+				new Arena(source,uuid);
 			}
 		}
 	}
@@ -68,9 +70,12 @@ public class Arena {
 	World world;
 	ArenaType type;
 	List<Player> players;
+	UUID uuid;
 
-	public Arena(File file){
+	public Arena(File file, UUID uuid){
 		arenaID = arenas.size();
+		System.out.println(file);
+		this.uuid = uuid;
 		MapXmlReader xml = new MapXmlReader(file+"/map.xml");
 		try {
 
@@ -82,14 +87,21 @@ public class Arena {
 		this.version = xml.getVersion();
 		setType(ArenaType.WAITING);
 		load();
-		System.out.println(world);
+//		System.out.println(world);
 		players = new ArrayList<Player>();
 		arenas.add(this);
 		this.spawn.setWorld(world);
 		this.spawn2.setWorld(world);
 
-		}catch (SAXException | IOException | ParserConfigurationException | NullPointerException e) {
-			System.out.println(e.getMessage());
+		}catch (SAXException | IOException | ParserConfigurationException e) {
+			System.out.println(e.getLocalizedMessage());
+			for(int i = 0; i < Arena.getArenas().size(); i++){
+				if(Arena.getArenas().get(i).equals(this))
+					this.remove(true);
+			}
+			this.remove(false);
+		} finally {
+
 		}
 	}
 
@@ -136,6 +148,10 @@ public class Arena {
 		return buffer.toString();
 	}
 
+	public UUID getArenaUUID(){
+		return uuid;
+	}
+
 	public boolean addPlayer(Player player){
 		return players.add(player);
 	}
@@ -156,9 +172,12 @@ public class Arena {
 	}
 
 	public boolean load(){
-		WorldCreator creator = new WorldCreator(getArenaName());
+		WorldCreator creator = new WorldCreator(getArenaUUID().toString());
 		creator.generator(new NullChunk());
+		System.out.println(creator);
+		deleteFile(new File(getArenaName()));
 		this.world = creator.createWorld();
+		System.out.println(world);
 		this.world.setSpawnFlags(false, false);
 		this.world.setPVP(true);
 		return true;
@@ -177,17 +196,14 @@ public class Arena {
 		load();
 	}
 
-	public boolean remove(){
-		stopArena();
-		WhiteBirdPvP.getInstance().getServer().unloadWorld(this.getWorld(), false);
-		File uid = new File(this.getWorld().getWorldFolder()+"/uid.dat");
-		uid.delete();
-		File playerdata = new File(this.getWorld().getWorldFolder()+"/playerdata");
-		playerdata.delete();
-		File session = new File(this.getWorld().getWorldFolder()+"/session.lock");
-		session.delete();
-		File data = new File(this.getWorld().getWorldFolder()+"/data");
-		data.delete();
+	public boolean remove(boolean check) throws NullPointerException {
+		if(check){
+			unload();
+			WhiteBirdPvP.getInstance().getServer().unloadWorld(this.getWorld(), false);
+		}
+
+		File mapFile = new File(uuid.toString());
+		Util.deleteFile(mapFile);
 		return true;
 	}
 
@@ -198,4 +214,14 @@ public class Arena {
 		}
 		return temp;
 	}
+
+	private void deleteFile(File path){
+		File session = new File(path+"/session.lock");
+		File stats = new File(path+"/stats");
+		File playerdata = new File(path+"/playerdata");
+		Util.deleteFile(session);
+		Util.deleteFile(stats);
+		Util.deleteFile(playerdata);
+	}
+
 }

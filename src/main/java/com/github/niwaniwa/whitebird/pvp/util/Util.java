@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.nio.channels.FileChannel;
 import java.util.Map;
 
@@ -95,6 +97,19 @@ public class Util {
 		copyTransfer(new File(srcPath), new File(destPath));
 	}
 
+	public static void deleteFile(File f){
+		if(f.exists() == false){return;}
+		if(f.isFile()){
+			f.delete();
+		} else if(f.isDirectory()){
+			File[] files = f.listFiles();
+			for(int i=0; i<files.length; i++){
+				deleteFile(files[i]);
+			}
+			f.delete();
+		}
+	}
+
 	public static void copyTransfer(final File src, final File dest)
 			  throws IOException {
 		if (src.isDirectory()) {
@@ -115,5 +130,21 @@ public class Util {
 			}
 		}
 	}
+
+	public static String getPlayerLanguage(Player player){
+		String s = null;
+		try{
+			Method getHandle = player.getClass().getMethod("getHandle");
+			Object entityPlayer = getHandle.invoke(player);
+			Field field = entityPlayer.getClass().getDeclaredField("locale");
+			field.setAccessible(true);
+			s = (String) field.get(entityPlayer);
+		} catch (Exception e){}
+
+		return s;
+
+	}
+
+
 
 }

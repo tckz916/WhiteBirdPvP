@@ -5,12 +5,13 @@ Commnads:
 Duel:
   inGame: "§cPlaying a game now."
   duelRequestedTo: "§6%p has requested to duel you."
-  duelAcceptTellraw: "§6to accept, type §d/accept %p §6in the next 40 seconds."
+  duelAcceptTellraw: "§6to accept, type §d/accept %p §6in the next 40 §r§6seconds."
   duealAccept: "§6Duel accepted"
-arena:
+Arena:
   full: "arena is full."
   opponent: "opponent"
-item:
+Item:
   enderPearle:
-    coolTimeEnable: "§7Cool time is now enabled.Cool time is §6%t §7seconds."
+    coolTimeEnable: "§7Cool time is now enabled.\nCool time is §6%t §7seconds."
     coolTimeDisable: "Cool time became invalid"
+    notUse: "§7Cannot use an ender pearl for cool time. §6%t §7more seconds"

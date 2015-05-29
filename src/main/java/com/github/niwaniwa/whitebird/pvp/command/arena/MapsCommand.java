@@ -17,10 +17,10 @@ public class MapsCommand implements CommandExecutor {
 		int i = 1;
 		for(Arena arena : Arena.getArenas()){
 			if(arena.getArenaType().equals(ArenaType.STARTING)){
-				sender.sendMessage("§2"+i+" : §c"+arena.getArenaName() + "§6by §c"+arena.getAuthor());
+				sender.sendMessage("§2"+i+" : §c"+arena.getArenaName() + "§6 by §c"+arena.getAuthor());
 				i++;
 			} else {
-				sender.sendMessage("§2"+i+" : §2"+arena.getArenaName() + "§6by §c"+arena.getAuthor());
+				sender.sendMessage("§2"+i+" : §2"+arena.getArenaName() + "§6 by §c"+arena.getAuthor());
 				i++;
 			}
 		}

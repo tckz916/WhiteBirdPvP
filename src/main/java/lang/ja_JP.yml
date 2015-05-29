@@ -4,13 +4,19 @@ Commnads:
   notPlayer: "§cプレイヤーを指定してください"
 Duel:
   inGame: "§c現在試合中です"
+  targetInGame: "§c%p は現在試合中です"
   duelRequestedTo: "§6%p に申請しました"
-  duelAcceptTellraw: "§6§d/accept %p §6で申請を受理 : 40秒後申請が破棄されます"
+  duelRequestedFrom: "§6%p から申請されました"
+  duelAcceptTellraw: "§6§d/accept %p §6で申請を受理 : §d40§6秒後申請が破棄されます"
   duealAccept: "§6申請が受理されました"
-arena:
+  duelDestroy: "§e申請は破棄されました"
+  duelTimeOut: "§e一定時間経過したため申請は破棄されました"
+  playerNotDuelReqested: "§c貴方は申請を受けていません"
+Arena:
   full: "§6e現在アリーナはすべて満員です。時間を置いてから再度実行してください"
   opponent: "§6対戦相手"
-item:
+Item:
   enderPearle:
-    coolTimeEnable: "§7クールタイムが有効になりました。クールタイムは §6%t §7秒です。"
+    coolTimeEnable: "§7クールタイムが有効になりました。\nクールタイムは §6%t §7秒です。"
     coolTimeDisable: "§7クールタイムが解除されました。"
+    notUse: "§7現在クールタイムのため使用できません。残り §6%t §7秒です。"

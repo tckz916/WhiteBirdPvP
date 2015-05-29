@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.inventory.ItemStack;
@@ -100,10 +101,11 @@ public class ArenaListener implements Listener {
 	 * ダメージ判定
 	 * @param event
 	 */
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGH)
 	public void onDamage(WhiteBirdPlayerDamageEvent event){
 		Player damager = event.getDamagePlayer();
-		event.setDamage(event.getDamage()-1);
+		event.setDamage(event.getDamage());
+//		damager.setNoDamageTicks(0);
 		if(Util.getArena(damager)==null){
 
 			if(!damager.getWorld().equals(Bukkit.getWorld("world_the_end"))){

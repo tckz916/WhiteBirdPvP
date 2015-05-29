@@ -24,9 +24,20 @@ public class ArenaLeaveCommand implements CommandExecutor {
 			sender.sendMessage("§c試合中ではありません");
 			return true;
 		}
+
+		if(args.length == 0){
+			sender.sendMessage("/leave <reason> : 理由");
+			return true;
+		}
+
+		StringBuffer sb = new StringBuffer();
+		for(String str : args){
+			sb.append(str+" ");
+		}
+
 		Arena arena = Util.getArena(player);
 		for(Player temp : arena.getArenaPlayers()){
-			temp.sendMessage("§c"+player.getName()+"が試合を中断しました");
+			temp.sendMessage("§c"+player.getName()+"が "+sb.toString()+" のため試合を中断しました");
 			Util.teleportSpawn(temp);
 		}
 		arena.stopArena();

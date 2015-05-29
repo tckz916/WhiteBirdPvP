@@ -1,6 +1,7 @@
 package com.github.niwaniwa.whitebird.pvp;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
@@ -39,7 +40,7 @@ public class WhiteBirdPvP extends JavaPlugin {
 		regiterListeners();
 		registersArena();
 
-		rand.runTaskTimer(this, 20, 20);
+//		rand.runTaskTimer(this, 60, 40);
 
 		MessageManager.copyLangFile();
 
@@ -47,6 +48,9 @@ public class WhiteBirdPvP extends JavaPlugin {
 
 	@Override
 	public void onDisable(){
+		for(int i = 0; i < Arena.getArenas().size(); i++){
+			Arena.getArenas().get(i).remove(true);
+		}
 	}
 
 	public static WhiteBirdPvP getInstance(){
@@ -94,11 +98,14 @@ public class WhiteBirdPvP extends JavaPlugin {
 			return;
 		}
 		getLogger().info("load map : "+Arena.getArenas().size());
+		try {
+			new File("arenas.txt").createNewFile();
+		} catch (IOException e) {}
 	}
 
 	private void disable(){
-		getLogger().warning("Map is Empty. This plugin is Disable!");
-		Bukkit.getPluginManager().disablePlugin(this);
+		getLogger().warning("Map is Empty! This plugin is Disable!");
+//		Bukkit.getPluginManager().disablePlugin(this);
 	}
 
 }

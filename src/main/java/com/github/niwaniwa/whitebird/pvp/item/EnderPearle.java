@@ -1,6 +1,8 @@
 package com.github.niwaniwa.whitebird.pvp.item;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -11,43 +13,52 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import com.github.niwaniwa.whitebird.pvp.WhiteBirdPvP;
+import com.github.niwaniwa.whitebird.pvp.conf.MessageManager;
 
 public class EnderPearle implements Listener {
 
 	private ArrayList<Player> player = new ArrayList<Player>();
-
-	int i1 = 13;
+	private Map<Player,Integer> time = new HashMap<Player,Integer>();
 
 	@EventHandler
 	public void onTeleprot(PlayerInteractEvent event){
+		int i1 = 0;
 		if(!(event.getAction().equals(Action.RIGHT_CLICK_AIR) || event.getAction().equals(Action.RIGHT_CLICK_BLOCK))){return;}
 		if(event.getItem()==null){return;}
 		if(!event.getItem().getType().equals(Material.ENDER_PEARL)){
 			return;
 		}
 		if(player.contains(event.getPlayer())){
-			event.getPlayer().sendMessage("§7現在クールタイムのため使用できません。残り§6"+i1+"§7秒です。");
+			i1 = time.get(event.getPlayer());
+			event.getPlayer().sendMessage(
+					MessageManager.getString(event.getPlayer(), "Item.enderPearle.notUse")
+					.replaceAll("%t", String.valueOf(i1)));
 			event.setCancelled(true);
 			return;
 		}
 		int wait = 13;
 		player.add(event.getPlayer());
-		event.getPlayer().sendMessage("§7クールタイムが有効になりました");
-		event.getPlayer().sendMessage("§7クールタイムは§6 " + wait + " §7秒です");
+		event.getPlayer().sendMessage(
+				MessageManager.getString(event.getPlayer(), "Item.enderPearle.coolTimeEnable")
+				.replaceAll("%t", String.valueOf(wait)));
+		time.put(event.getPlayer(), wait);
 		new BukkitRunnable() {
 			int i = 0;
+			int i2 = wait;
 			@Override
 			public void run() {
-				if(i == 13){
+				if(i == wait){
 					player.remove(event.getPlayer());
-					event.getPlayer().sendMessage("§7クールタイムが解除されました");
-					i1 = 13;
+					event.getPlayer().sendMessage(MessageManager.getString(event.getPlayer(), "Item.enderPearle.coolTimeDisable"));
 					this.cancel();
 					return;
+				} else {
+					i++;
+					i2--;
+					time.put(event.getPlayer(), i2);
 				}
-				i++;
-				i1 = i1-1;
 			}
-		}.runTaskTimer(WhiteBirdPvP.getInstance(), 0, 20);
+		}.runTaskTimer(WhiteBirdPvP.getInstance(), 20 , 20);
+
 	}
 }
