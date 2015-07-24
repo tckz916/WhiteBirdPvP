@@ -1,5 +1,6 @@
 package com.github.niwaniwa.whitebird.pvp.item;
 
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -18,6 +19,10 @@ public class PotionListener implements Listener {
 					|| !event.getItem().getType().equals(Material.POTION)){return;}
 
 			if(event.getItem().getDurability() <= 0){return;}
+
+			if(event.getPlayer().getGameMode().equals(GameMode.CREATIVE)){
+				return;
+			}
 
 			Potion potion = Potion.fromItemStack(event.getItem());
 			if(potion.isSplash()){

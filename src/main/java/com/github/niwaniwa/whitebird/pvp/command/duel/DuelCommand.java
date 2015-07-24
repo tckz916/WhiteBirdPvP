@@ -55,7 +55,14 @@ public class DuelCommand implements CommandExecutor {
 
 		duelList.put(player, target);
 		duelMessage(target, player);
-		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), build(target, player));
+		boolean b = false;
+		if(args.length == 2){
+			if(args[1].equalsIgnoreCase("-r")){
+				target.sendMessage(pre+"§cこの試合はレートに変化が及びます。");
+				b = true;
+			}
+		}
+		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), build(target, player, b));
 		target.sendMessage(pre+"§640秒経つと申請は破棄されます");
 		run(player);
 		return true;
@@ -98,16 +105,22 @@ public class DuelCommand implements CommandExecutor {
 	 * @param player player
 	 * @return String
 	 */
-	private String tellrawMessage(Player target,Player player){
+	private String tellrawMessage(Player target,Player player, boolean b){
 		ArrayList<String> items = new ArrayList<String>();
 		items.add("\"text\":\"" + "§r"+pre+MessageManager.getString(target, "Duel.duelAcceptTellraw")
 				.replaceAll("%p", Util.toWhiteBird(player).getPlayer().getName())
 				+ "\"");
 		items.add("\"color\":\"" + ChatColor.LIGHT_PURPLE.name().toLowerCase() + "\"");
 		items.add("\"" + "underlined" + "\":\"true\"");
+		if(!b){
+			items.add("\"clickEvent\":"
+	                + "{\"action\":\"" + "run_command" + "\","
+	                        + "\"value\":\"" + "/accept "+player.getName() + "\"}");
+		} else {
 		items.add("\"clickEvent\":"
                 + "{\"action\":\"" + "run_command" + "\","
-                        + "\"value\":\"" + "/accept "+player.getName() + "\"}");
+                        + "\"value\":\"" + "/accept "+player.getName() + " -r" + "\"}");
+		}
 		String temp = "{\"text\":\"" + "クリック : 申請を受理" + "\","
                 + "\"color\":\"" + ChatColor.LIGHT_PURPLE.name().toLowerCase() + "\"}";
 		items.add("\"hoverEvent\":"
@@ -128,11 +141,11 @@ public class DuelCommand implements CommandExecutor {
         return buffer.toString();
     }
 
-	private String build(Player target,Player player) {
+	private String build(Player target,Player player, boolean b) {
         return "tellraw "
                 + target.getName()
                 + " {\"text\":\"\",\"extra\":["
-                + tellrawMessage(target, player)
+                + tellrawMessage(target, player,b)
                 + "]}";
     }
 

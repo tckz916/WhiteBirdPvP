@@ -17,6 +17,7 @@ import org.bukkit.potion.PotionEffect;
 import com.github.niwaniwa.whitebird.pvp.arena.Arena;
 import com.github.niwaniwa.whitebird.pvp.arena.ArenaType;
 import com.github.niwaniwa.whitebird.pvp.conf.MessageManager;
+import com.github.niwaniwa.whitebird.pvp.raito.Ratio;
 import com.github.niwaniwa.whitebird.pvp.util.Util;
 
 public class AcceptCommand implements CommandExecutor {
@@ -69,6 +70,13 @@ public class AcceptCommand implements CommandExecutor {
 
 		setMode(player);
 		setMode(target);
+
+		if(args.length == 2){
+			if(args[1].equalsIgnoreCase("-r")){
+				sendRatio(player, target);
+				gameArena.setRatioMode(true);
+			}
+		}
 
 		settingArena(gameArena, player, target);
 
@@ -144,6 +152,13 @@ public class AcceptCommand implements CommandExecutor {
 		arena.addPlayer(player2);
 		arena.setType(ArenaType.STARTING);
 
+	}
+
+	private void sendRatio(Player player,Player target){
+		Ratio r1 = Ratio.getRatio(player);
+		Ratio r2 = Ratio.getRatio(target);
+		player.sendMessage("§6"+target.getName()+"'s koke : §d"+r1.getRatio() + " ");
+		target.sendMessage("§6"+player.getName()+"'s koke : §d"+r2.getRatio() + " ");
 	}
 
 	private void errorMsg(Player p){

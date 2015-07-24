@@ -37,3 +37,4 @@ commands:
     permission: whitebird.player
     usage: /<command>
   getInventory:
+  ratio:

@@ -9,6 +9,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.github.niwaniwa.whitebird.pvp.arena.Arena;
 import com.github.niwaniwa.whitebird.pvp.command.InventoryCommand;
+import com.github.niwaniwa.whitebird.pvp.command.RatioCommand;
 import com.github.niwaniwa.whitebird.pvp.command.SpawnCommand;
 import com.github.niwaniwa.whitebird.pvp.command.WhiteBirdPvPCommand;
 import com.github.niwaniwa.whitebird.pvp.command.arena.ArenaCommand;
@@ -44,6 +45,8 @@ public class WhiteBirdPvP extends JavaPlugin {
 
 		MessageManager.copyLangFile();
 
+		Arena.disableArenas();
+
 	}
 
 	@Override
@@ -71,6 +74,7 @@ public class WhiteBirdPvP extends JavaPlugin {
 		getCommand("spawn").setExecutor(new SpawnCommand());
 		getCommand("leave").setExecutor(new ArenaLeaveCommand());
 		getCommand("getInventory").setExecutor(new InventoryCommand());
+		getCommand("ratio").setExecutor(new RatioCommand());
 //		getCommand("namechange").setExecutor(new NameChangeCommand());
 	}
 

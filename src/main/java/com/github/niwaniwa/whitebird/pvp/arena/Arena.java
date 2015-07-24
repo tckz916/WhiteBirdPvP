@@ -8,6 +8,7 @@ import java.util.UUID;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
@@ -15,7 +16,6 @@ import org.bukkit.entity.Player;
 import org.xml.sax.SAXException;
 
 import com.github.niwaniwa.whitebird.core.player.WhiteBirdPlayer;
-import com.github.niwaniwa.whitebird.pvp.WhiteBirdPvP;
 import com.github.niwaniwa.whitebird.pvp.util.MapXmlReader;
 import com.github.niwaniwa.whitebird.pvp.util.NullChunk;
 import com.github.niwaniwa.whitebird.pvp.util.Util;
@@ -46,9 +46,10 @@ public class Arena {
 		return waitArena;
 	}
 
-	public static void registerArena(File source){
-		if(!source.exists()){return;}
-		if(source.isFile()){return;}
+	public static List<Arena> registerArena(File source){
+		List<Arena> arenas = new ArrayList<Arena>();
+		if(!source.exists()){return arenas;}
+		if(source.isFile()){return arenas;}
 		File[] files = source.listFiles();
 		UUID uuid = UUID.randomUUID();
 		for(File file : files){
@@ -56,10 +57,22 @@ public class Arena {
 				try {
 					Util.copyTransfer(source, new File(uuid.toString()));
 				} catch (IOException e) {}
-				new Arena(source,uuid);
+				Arena arena = new Arena(source,uuid);
+				arenas.add(arena);
 			}
 		}
+		return arenas;
 	}
+
+	public static void disableArenas() {
+
+		for (Arena arena : arenas) {
+			arena.remove(true);
+		}
+
+		arenas.clear();
+
+    }
 
 	int arenaID;
 	String MapName;
@@ -71,6 +84,7 @@ public class Arena {
 	ArenaType type;
 	List<Player> players;
 	UUID uuid;
+	boolean ratio;
 
 	public Arena(File file, UUID uuid){
 		arenaID = arenas.size();
@@ -85,6 +99,7 @@ public class Arena {
 		this.MapName = xml.getMapName();
 		this.author = xml.getAuthor();
 		this.version = xml.getVersion();
+		this.ratio = false;
 		setType(ArenaType.WAITING);
 		load();
 //		System.out.println(world);
@@ -152,6 +167,10 @@ public class Arena {
 		return uuid;
 	}
 
+	public boolean getRatioMode(){
+		return ratio;
+	}
+
 	public boolean addPlayer(Player player){
 		return players.add(player);
 	}
@@ -164,9 +183,14 @@ public class Arena {
 		this.type = type;
 	}
 
+	public void setRatioMode(boolean bool){
+		this.ratio = bool;
+	}
+
 	public boolean stopArena(){
 		if(getArenaType().equals(ArenaType.WAITING)){return false;}
 		setType(ArenaType.WAITING);
+		setRatioMode(false);
 		players.clear();
 		return true;
 	}
@@ -183,29 +207,31 @@ public class Arena {
 		return true;
 	}
 
-	public boolean unload(){
-		stopArena();
-		WhiteBirdPvP.getInstance().getServer().unloadWorld(this.getWorld(), false);
-		arenas.remove(this);
-		return true;
-	}
+	public boolean unload() {
+        stopArena();
+        if (Bukkit.unloadWorld(this.getWorld(), false)) {
+            System.out.println("- " + this.getArenaName() + " unloaded -");
+        } else {
+            System.out.println("Could not unload world (players on it or main world?)");
+            return false;
+        }
+        return true;
+    }
 
 	public void reload(){
 		stopArena();
-		WhiteBirdPvP.getInstance().getServer().unloadWorld(this.getWorld(), false);
 		load();
 	}
 
 	public boolean remove(boolean check) throws NullPointerException {
-		if(check){
-			unload();
-			WhiteBirdPvP.getInstance().getServer().unloadWorld(this.getWorld(), false);
-		}
+        if (check) {
+            unload();
+        }
 
-		File mapFile = new File(uuid.toString());
-		Util.deleteFile(mapFile);
-		return true;
-	}
+        File mapFile = new File(uuid.toString());
+        Util.deleteFile(mapFile);
+        return true;
+    }
 
 	public List<WhiteBirdPlayer> toWhiteBirdPlayer(){
 		List<WhiteBirdPlayer> temp = new ArrayList<WhiteBirdPlayer>();

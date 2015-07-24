@@ -10,6 +10,8 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import com.github.niwaniwa.whitebird.core.event.WhiteBirdPlayerDamageEvent;
 import com.github.niwaniwa.whitebird.core.event.WhiteBirdPlayerDeathEvent;
@@ -18,6 +20,7 @@ import com.github.niwaniwa.whitebird.core.util.Title;
 import com.github.niwaniwa.whitebird.core.util.WhiteTell;
 import com.github.niwaniwa.whitebird.pvp.WhiteBirdPvP;
 import com.github.niwaniwa.whitebird.pvp.arena.Arena;
+import com.github.niwaniwa.whitebird.pvp.raito.Ratio;
 import com.github.niwaniwa.whitebird.pvp.util.Util;
 
 public class ArenaListener implements Listener {
@@ -53,6 +56,11 @@ public class ArenaListener implements Listener {
 
 					tell(death, p);
 					tell(p, death);
+
+					if(arena1.getRatioMode()){
+						setRatio(killer, death);
+					}
+
 				}
 			}
 
@@ -73,7 +81,7 @@ public class ArenaListener implements Listener {
 		potSendMessage(death, killer);
 		healthSendMessage(killer, death);
 		healthSendMessage(death, killer);
-		arena1.stopArena();
+
 		String message = deathMessage(death);
 		message = message.replaceAll("%k", Util.toWhiteBird(killer).getFullName());
 		if(Util.getPing(killer)!=null){
@@ -95,6 +103,12 @@ public class ArenaListener implements Listener {
 
 		tell(killer, death);
 
+		if(arena1.getRatioMode()){
+			setRatio(killer, death);
+		}
+
+		arena1.stopArena();
+
 	}
 
 	/**
@@ -104,7 +118,15 @@ public class ArenaListener implements Listener {
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onDamage(WhiteBirdPlayerDamageEvent event){
 		Player damager = event.getDamagePlayer();
-		event.setDamage(event.getDamage());
+
+		if(damager.getKiller()!=null){
+			Player kill = damager.getKiller();
+			for(PotionEffect e : kill.getActivePotionEffects()){
+				if(e.getType().equals(PotionEffectType.REGENERATION)){
+					event.setDamage(event.getDamage()-1.2);
+				}
+			}
+		}
 //		damager.setNoDamageTicks(0);
 		if(Util.getArena(damager)==null){
 
@@ -148,31 +170,43 @@ public class ArenaListener implements Listener {
 		return temp2;
 	}
 
+	public void setRatio(Player winer, Player loser){
+		Ratio r1 = Ratio.getRatio(winer);
+		Ratio r2 = Ratio.getRatio(loser);
+		int i = Ratio.ratioMath(r1.getRatio(), r2.getRatio(), true);
+		r1.setRatio(r1.getRatio() + i);
+		r2.setRatio(r2.getRatio() - i);
+		String msg = "§6Koke Changes: \n:§a"+winer.getName()+" +" + i + "("+r1.getRatio()+")\n"
+				+ "§c" + loser.getName()+" -" + i + "("+r2.getRatio()+")";
+		winer.sendMessage(msg);
+		loser.sendMessage(msg);
+	}
+
 	private String deathMessage(Player player){
 		DamageCause damage = player.getLastDamageCause().getCause();
 		String killMessage = null;
 		switch(damage){
 		case PROJECTILE:
 			killMessage = "§c"+Util.toWhiteBird(player).getFullName()
-			+" §eは §c%k §eから撃たれた。";
+			+" §eは §r%k §eから撃たれた。";
 			break;
 		case SUFFOCATION:
 			break;
 		case FALL:
 			killMessage = "§c"+Util.toWhiteBird(player).getFullName()
-				+" §eは §c%k §eに突き落とされた。";
+				+" §eは §r%k §eに突き落とされた。";
 			break;
 		case FIRE:
 			killMessage = "§c"+Util.toWhiteBird(player).getFullName()
-					+" §eは §c%k §eによって燃え尽きた。";
+					+" §eは §r%k §eによって燃え尽きた。";
 			break;
 		case FIRE_TICK:
 			killMessage = "§c"+Util.toWhiteBird(player).getFullName()
-			+" §eは §c%k §eによって燃え尽きた。";
+			+" §eは §r%k §eによって燃え尽きた。";
 			break;
 		default:
 			killMessage = "§c"+Util.toWhiteBird(player).getFullName()
-			+" §eは §c%k §eに殺害された。";
+			+" §eは §r%k §eに殺害された。";
 			break;
 		}
 //		String str = "\n %kPing: %p";

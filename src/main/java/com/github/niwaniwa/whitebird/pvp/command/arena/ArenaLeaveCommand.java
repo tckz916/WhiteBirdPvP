@@ -41,7 +41,7 @@ public class ArenaLeaveCommand implements CommandExecutor {
 			Util.teleportSpawn(temp);
 		}
 		arena.stopArena();
-		return false;
+		return true;
 	}
 
 }

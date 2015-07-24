@@ -15,7 +15,7 @@ public class Ratio {
 
 	private static List<Ratio> data = new ArrayList<Ratio>();
 
-	private static final int defaultValue = 700;
+	private static final int defaultValue = 800;
 
 	public static List<Ratio> getRatios(){
 		return data;
@@ -87,6 +87,9 @@ public class Ratio {
 
 	public void setRatio(int ratio){
 		this.value = ratio;
+		try {
+			this.saveRatio();
+		} catch (IOException e) {}
 	}
 
 	@Deprecated
