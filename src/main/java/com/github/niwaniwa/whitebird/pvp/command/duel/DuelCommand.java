@@ -13,8 +13,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import com.github.niwaniwa.whitebird.pvp.WhiteBirdPvP;
-import com.github.niwaniwa.whitebird.pvp.conf.MessageManager;
 import com.github.niwaniwa.whitebird.pvp.util.Util;
+import com.github.niwaniwa.whitebird.pvp.util.message.MessageManager;
 
 public class DuelCommand implements CommandExecutor {
 
@@ -31,19 +31,19 @@ public class DuelCommand implements CommandExecutor {
 			Command command, String label,
 			String[] args) {
 		if(!(sender instanceof Player)){
-			sender.sendMessage(pre+MessageManager.getString(sender, "Commnads.Console"));
-		} else if(args.length==0){sender.sendMessage(pre+MessageManager.getString(sender, "Commands.notPlayer")); return true;}
+			sender.sendMessage(MessageManager.getMessage(sender, pre, "Commnads.Console"));
+		} else if(args.length==0){sender.sendMessage(MessageManager.getMessage(sender, pre, "Commands.notPlayer")); return true;}
 
 		Player player = (Player) sender;
 		Player target = Util.getPlayer(args[0]);
 
-		if(target == null){sender.sendMessage(pre+MessageManager.getString(player, "Commands.notFoundPlayer")); return true;}
+		if(target == null){sender.sendMessage(MessageManager.getMessage(player, "Commands.notFoundPlayer")); return true;}
 
 		if(Util.getArena(player)!=null){
-			sender.sendMessage(pre+MessageManager.getString(player, "Duel.inGame"));
+			sender.sendMessage(MessageManager.getMessage(player, "Duel.inGame"));
 			return true;
 		} else if(Util.getArena(target)!=null){
-			sender.sendMessage(pre+MessageManager.getString(sender, "Duel.targetInGame")
+			sender.sendMessage(MessageManager.getMessage(sender, pre, "Duel.targetInGame")
 					.replaceAll("%p", target.getName()));
 			return true;
 		}
@@ -73,7 +73,7 @@ public class DuelCommand implements CommandExecutor {
 			@Override
 			public void run() {
 				if(duelList.containsKey(player)){
-					player.sendMessage(pre+MessageManager.getString(player, "Duel.duelTimeOut"));
+					player.sendMessage(pre+MessageManager.getMessage(player, pre, "Duel.duelTimeOut"));
 					duelList.remove(player);
 					this.cancel();
 					return;
@@ -90,12 +90,12 @@ public class DuelCommand implements CommandExecutor {
 	}
 
 	private void duelMessage_P(Player target,Player player){
-		player.sendMessage(pre+MessageManager.getString(target, "Duel.duelRequestedTo")
+		player.sendMessage(pre+MessageManager.getMessage(target, pre, "Duel.duelRequestedTo")
 				.replaceAll("%p", Util.toWhiteBird(target).getPlayer().getName()));
 	}
 
 	private void duelMessage_T(Player target,Player player){
-		target.sendMessage(pre+MessageManager.getString(target, "Duel.duelRequestedFrom")
+		target.sendMessage(pre+MessageManager.getMessage(target, pre, "Duel.duelRequestedFrom")
 				.replaceAll("%p", Util.toWhiteBird(player).getPlayer().getName()));
 	}
 
@@ -107,7 +107,7 @@ public class DuelCommand implements CommandExecutor {
 	 */
 	private String tellrawMessage(Player target,Player player, boolean b){
 		ArrayList<String> items = new ArrayList<String>();
-		items.add("\"text\":\"" + "§r"+pre+MessageManager.getString(target, "Duel.duelAcceptTellraw")
+		items.add("\"text\":\"" + "§r"+pre+MessageManager.getMessage(target, pre, "Duel.duelAcceptTellraw")
 				.replaceAll("%p", Util.toWhiteBird(player).getPlayer().getName())
 				+ "\"");
 		items.add("\"color\":\"" + ChatColor.LIGHT_PURPLE.name().toLowerCase() + "\"");

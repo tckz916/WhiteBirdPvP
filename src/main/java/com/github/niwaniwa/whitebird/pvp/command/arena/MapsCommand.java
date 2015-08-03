@@ -24,7 +24,7 @@ public class MapsCommand implements CommandExecutor {
 				i++;
 			}
 		}
-		return false;
+		return true;
 	}
 
 }

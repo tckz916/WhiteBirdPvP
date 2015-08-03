@@ -13,7 +13,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import com.github.niwaniwa.whitebird.pvp.WhiteBirdPvP;
-import com.github.niwaniwa.whitebird.pvp.conf.MessageManager;
+import com.github.niwaniwa.whitebird.pvp.util.message.MessageManager;
 
 public class EnderPearle implements Listener {
 
@@ -31,7 +31,7 @@ public class EnderPearle implements Listener {
 		if(player.contains(event.getPlayer())){
 			i1 = time.get(event.getPlayer());
 			event.getPlayer().sendMessage(
-					MessageManager.getString(event.getPlayer(), "Item.enderPearle.notUse")
+					MessageManager.getMessage(event.getPlayer(), "Item.enderPearle.notUse")
 					.replaceAll("%t", String.valueOf(i1)));
 			event.setCancelled(true);
 			return;
@@ -39,7 +39,7 @@ public class EnderPearle implements Listener {
 		int wait = 13;
 		player.add(event.getPlayer());
 		event.getPlayer().sendMessage(
-				MessageManager.getString(event.getPlayer(), "Item.enderPearle.coolTimeEnable")
+				MessageManager.getMessage(event.getPlayer(), "Item.enderPearle.coolTimeEnable")
 				.replaceAll("%t", String.valueOf(wait)));
 		time.put(event.getPlayer(), wait);
 		new BukkitRunnable() {
@@ -49,7 +49,7 @@ public class EnderPearle implements Listener {
 			public void run() {
 				if(i == wait){
 					player.remove(event.getPlayer());
-					event.getPlayer().sendMessage(MessageManager.getString(event.getPlayer(), "Item.enderPearle.coolTimeDisable"));
+					event.getPlayer().sendMessage(MessageManager.getMessage(event.getPlayer(), "Item.enderPearle.coolTimeDisable"));
 					this.cancel();
 					return;
 				} else {

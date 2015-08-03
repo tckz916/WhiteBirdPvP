@@ -18,11 +18,11 @@ import com.github.niwaniwa.whitebird.pvp.command.arena.MapsCommand;
 import com.github.niwaniwa.whitebird.pvp.command.arena.RandomMatch;
 import com.github.niwaniwa.whitebird.pvp.command.duel.AcceptCommand;
 import com.github.niwaniwa.whitebird.pvp.command.duel.DuelCommand;
-import com.github.niwaniwa.whitebird.pvp.conf.MessageManager;
 import com.github.niwaniwa.whitebird.pvp.item.EnderPearle;
 import com.github.niwaniwa.whitebird.pvp.item.PotionListener;
 import com.github.niwaniwa.whitebird.pvp.listener.ArenaListener;
 import com.github.niwaniwa.whitebird.pvp.listener.PlayerListener;
+import com.github.niwaniwa.whitebird.pvp.util.message.MessageManager;
 
 public class WhiteBirdPvP extends JavaPlugin {
 
@@ -43,17 +43,13 @@ public class WhiteBirdPvP extends JavaPlugin {
 
 //		rand.runTaskTimer(this, 60, 40);
 
-		MessageManager.copyLangFile();
-
-		Arena.disableArenas();
+		MessageManager.loadLangFiles(false);
 
 	}
 
 	@Override
 	public void onDisable(){
-		for(int i = 0; i < Arena.getArenas().size(); i++){
-			Arena.getArenas().get(i).remove(true);
-		}
+		Arena.disableArenas();
 	}
 
 	public static WhiteBirdPvP getInstance(){
@@ -86,7 +82,13 @@ public class WhiteBirdPvP extends JavaPlugin {
 	}
 
 	private void registersArena(){
+		File toPath = new File("arenas/");
 		File source = new File("maps/");
+
+		if(!toPath.exists()){
+			toPath.mkdirs();
+		}
+
 		if(!source.exists()){
 			System.out.println("THIS SERVER IS PLUGIN TEST MODE !!");
 //			disable();
@@ -111,5 +113,9 @@ public class WhiteBirdPvP extends JavaPlugin {
 		getLogger().warning("Map is Empty! This plugin is Disable!");
 //		Bukkit.getPluginManager().disablePlugin(this);
 	}
+
+	public static File getPluginJarFile() {
+        return getInstance().getFile();
+    }
 
 }

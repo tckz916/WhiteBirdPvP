@@ -23,6 +23,8 @@ import com.github.niwaniwa.whitebird.pvp.util.Util;
 public class Arena {
 	private static List<Arena> arenas = new ArrayList<Arena>();
 
+	public final static String path = "arenas/";
+
 	public static List<Arena> getArenas(){
 		return arenas;
 	}
@@ -55,7 +57,7 @@ public class Arena {
 		for(File file : files){
 			if(file.getName().equals("map.xml")){
 				try {
-					Util.copyTransfer(source, new File(uuid.toString()));
+					Util.copyTransfer(source, new File(path + uuid.toString()));
 				} catch (IOException e) {}
 				Arena arena = new Arena(source,uuid);
 				arenas.add(arena);
@@ -196,7 +198,7 @@ public class Arena {
 	}
 
 	public boolean load(){
-		WorldCreator creator = new WorldCreator(getArenaUUID().toString());
+		WorldCreator creator = new WorldCreator(path + getArenaUUID().toString());
 		creator.generator(new NullChunk());
 		System.out.println(creator);
 		deleteFile(new File(getArenaName()));
@@ -228,7 +230,7 @@ public class Arena {
             unload();
         }
 
-        File mapFile = new File(uuid.toString());
+        File mapFile = new File(path + uuid.toString());
         Util.deleteFile(mapFile);
         return true;
     }

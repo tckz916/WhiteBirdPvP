@@ -16,9 +16,9 @@ import org.bukkit.potion.PotionEffect;
 
 import com.github.niwaniwa.whitebird.pvp.arena.Arena;
 import com.github.niwaniwa.whitebird.pvp.arena.ArenaType;
-import com.github.niwaniwa.whitebird.pvp.conf.MessageManager;
 import com.github.niwaniwa.whitebird.pvp.raito.Ratio;
 import com.github.niwaniwa.whitebird.pvp.util.Util;
+import com.github.niwaniwa.whitebird.pvp.util.message.MessageManager;
 
 public class AcceptCommand implements CommandExecutor {
 
@@ -29,20 +29,20 @@ public class AcceptCommand implements CommandExecutor {
 			Command command, String label,
 			String[] args) {
 		if(!(sender instanceof Player)){
-			sender.sendMessage(pre+MessageManager.getString(sender, "Commnads.Console"));
+			sender.sendMessage(MessageManager.getMessage(sender, pre, "Commnads.Console"));
 			return true;
-		} else if(args.length==0){sender.sendMessage(pre+MessageManager.getString(sender, "Commands.notPlayer")); return true;}
+		} else if(args.length==0){sender.sendMessage(MessageManager.getMessage(sender, pre,"Commands.notPlayer")); return true;}
 
 		Player player = (Player) sender;
 		Player target = Util.getPlayer(args[0]);
 
-		if(target == null){sender.sendMessage(pre+MessageManager.getString(player, "Commands.notFoundPlayer")); return true;}
+		if(target == null){sender.sendMessage(MessageManager.getMessage(player, pre, "Commands.notFoundPlayer")); return true;}
 
 		if(Util.getArena(player)!=null){
-			sender.sendMessage(pre+MessageManager.getString(player, "Duel.inGame"));
+			sender.sendMessage(MessageManager.getMessage(player, pre, "Duel.inGame"));
 			return true;
 		} else if(Util.getArena(target)!=null){
-			sender.sendMessage(pre+MessageManager.getString(sender, "Duel.targetInGame")
+			sender.sendMessage(MessageManager.getMessage(sender, pre, "Duel.targetInGame")
 					.replaceAll("%p", target.getName()));
 			return true;
 		}
@@ -51,20 +51,20 @@ public class AcceptCommand implements CommandExecutor {
 
 		if(!Util.contains(map, target)
 				|| map.get(target)==null){
-			sender.sendMessage(pre+MessageManager.getString(sender, "Duel.playerNotDuelReqested"));
+			sender.sendMessage(MessageManager.getMessage(sender, pre, "Duel.playerNotDuelReqested"));
 			return true;
 		}
 
 		if(map.get(target).getName() != player.getName()){
-			sender.sendMessage(pre+"§c"+target.getName()+"から申請は受けていません。");
-			sender.sendMessage(pre+"§cもう一度申請し直してください。");
+			sender.sendMessage("§c"+target.getName()+"から申請は受けていません。");
+			sender.sendMessage("§cもう一度申請し直してください。");
 			return true;
 		}
 
 		Arena gameArena = randomArena();
 		if(gameArena == null){
-			sender.sendMessage(pre+MessageManager.getString(sender, "arena.full"));
-			target.sendMessage(pre+MessageManager.getString(target, "arena.full"));
+			sender.sendMessage(MessageManager.getMessage(sender, pre, "arena.full"));
+			target.sendMessage(MessageManager.getMessage(target, pre, "arena.full"));
 			return true;
 		}
 
@@ -142,7 +142,7 @@ public class AcceptCommand implements CommandExecutor {
 		player1.sendMessage(temp);
 		player2.sendMessage(temp);
 
-		String temp2 = "§6： "+MessageManager.getString(player1, "Arena.opponent")+" ： §d";
+		String temp2 = "§6： "+MessageManager.getMessage(player1, pre, "Arena.opponent")+" ： §d";
 
 		player1.sendMessage(temp2+player2.getName());
 		player2.sendMessage(temp2+player1.getName());
@@ -162,8 +162,8 @@ public class AcceptCommand implements CommandExecutor {
 	}
 
 	private void errorMsg(Player p){
-		p.sendMessage(pre+"§c問題が発生したため試合を開始することはできませんでした");
-		p.sendMessage(pre+"§c申請は破棄されるため再度申請ください");
-		p.sendMessage(pre+"§c/report <内容>で報告");
+		p.sendMessage("§c問題が発生したため試合を開始することはできませんでした");
+		p.sendMessage("§c申請は破棄されるため再度申請ください");
+		p.sendMessage("§c/report <内容>で報告");
 	}
 }
